@@ -94,10 +94,17 @@
             font-size: 0.85rem;
         }
 
+        /* 修正箇所：案内文のスタイル */
+        .pass-hint {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
         #error-message {
             color: var(--error);
             font-size: 0.75rem;
-            margin-top: 10px;
+            margin-top: 5px;
             min-height: 1rem;
             font-weight: bold;
         }
@@ -173,6 +180,7 @@
             <input type="text" id="passInput" placeholder="合言葉を入力">
             <button class="btn-check" onclick="unlock()">入室する</button>
         </div>
+        <p class="pass-hint">合言葉は公式LINEでお伝えしています</p>
         <div id="error-message"></div>
     </div>
 
@@ -206,26 +214,21 @@
         const std = document.getElementById('standard-course');
         const prm = document.getElementById('premium-course');
 
-        // エラーメッセージのリセット
         error.innerText = "";
 
         if (pass === "9tsunotobira") {
-            // スタンダード版を表示
             std.classList.remove('hidden');
             prm.classList.add('hidden');
         } else if (pass === "9master-key") {
-            // プレミアム版を表示
             prm.classList.remove('hidden');
             std.classList.add('hidden');
         } else {
-            // 間違っている場合
             error.innerText = "合言葉が違います";
             std.classList.add('hidden');
             prm.classList.add('hidden');
         }
     }
 
-    // Enterキーでも入室できるように設定
     document.getElementById('passInput').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             unlock();
