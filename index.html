@@ -6,10 +6,11 @@
     <title>Rainy Muse Art Lab - エニアグラム診断ポータル</title>
     <style>
         :root {
-            --gold: #c5a059;
+            --gold: #C9A24D; /* 修正：少し濃いゴールド */
             --navy: #1a2a3a;
             --white: #ffffff;
             --gray: #f4f4f2;
+            --ivory: #FFF9EE; /* 修正：薄いアイボリー */
             --error: #e74c3c;
         }
 
@@ -50,55 +51,69 @@
             display: block;
         }
 
-        /* 合言葉入力セクション */
+        /* 修正箇所：合言葉入力セクションの装飾強化 */
         .password-section {
-            background: #fafaf9;
-            padding: 20px;
-            border-radius: 4px;
+            background: var(--ivory); /* アイボリー背景 */
+            padding: 25px 20px;
+            border-radius: 8px;
             margin-bottom: 40px;
-            border: 1px solid #eee;
+            border: 1px solid #f0e6d2;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .input-label {
             font-size: 0.85rem;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-weight: bold;
+            color: var(--navy);
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
         }
 
         input[type="text"] {
-            padding: 10px;
-            border: 1px solid #ccc;
+            padding: 12px;
+            border: 1.5px solid var(--gold); /* 濃いゴールドの枠線 */
+            background-color: var(--white); /* 白い背景 */
             width: 60%;
             font-family: inherit;
             outline: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
 
         input[type="text"]:focus {
-            border-color: var(--gold);
+            box-shadow: 0 0 8px rgba(201, 162, 77, 0.2);
         }
 
         .btn-check {
-            padding: 10px 20px;
-            background: var(--gold);
+            padding: 10px 24px;
+            background: var(--gold); /* 濃いゴールドのボタン */
             color: white;
             border: none;
             cursor: pointer;
             font-family: inherit;
             font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.3s;
         }
 
-        /* 修正箇所：案内文のスタイル */
+        .btn-check:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 162, 77, 0.3);
+        }
+
         .pass-hint {
             font-size: 0.75rem;
-            color: #888;
-            margin-top: 10px;
+            color: #8a7b5d;
+            margin-top: 12px;
+            font-style: italic;
         }
 
         #error-message {
@@ -150,6 +165,7 @@
             letter-spacing: 0.1rem;
             font-size: 0.85rem;
             transition: all 0.3s;
+            border-radius: 2px;
         }
 
         .btn-enter:hover {
@@ -209,7 +225,7 @@
 
 <script>
     function unlock() {
-        const pass = document.getElementById('passInput').value;
+        const pass = document.getElementById('passInput').value.trim();
         const error = document.getElementById('error-message');
         const std = document.getElementById('standard-course');
         const prm = document.getElementById('premium-course');
@@ -219,9 +235,11 @@
         if (pass === "9tsunotobira") {
             std.classList.remove('hidden');
             prm.classList.add('hidden');
+            std.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else if (pass === "9master-key") {
             prm.classList.remove('hidden');
             std.classList.add('hidden');
+            prm.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
             error.innerText = "合言葉が違います";
             std.classList.add('hidden');
@@ -230,9 +248,7 @@
     }
 
     document.getElementById('passInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            unlock();
-        }
+        if (e.key === 'Enter') { unlock(); }
     });
 </script>
 
