@@ -6,12 +6,13 @@
     <title>Rainy Muse Art Lab - エニアグラム診断ポータル</title>
     <style>
         :root {
-            --gold: #C9A24D; /* 修正：少し濃いゴールド */
+            --gold: #C9A24D; /* アクセントカラー（濃いゴールド） */
+            --gold-light: #e0c58d;
             --navy: #1a2a3a;
             --white: #ffffff;
             --gray: #f4f4f2;
-            --ivory: #FFF9EE; /* 修正：薄いアイボリー */
-            --error: #e74c3c;
+            --ivory: #FFF9EE; /* 外枠のアイボリー */
+            --border-light: #e0e0e0; /* 通常時の薄い枠線 */
         }
 
         body {
@@ -51,14 +52,14 @@
             display: block;
         }
 
-        /* 修正箇所：合言葉入力セクションの装飾強化 */
+        /* --- 修正箇所：合言葉入力エリア --- */
         .password-section {
-            background: var(--ivory); /* アイボリー背景 */
-            padding: 25px 20px;
-            border-radius: 8px;
+            background: var(--ivory);
+            padding: 30px 20px;
+            border-radius: 12px;
             margin-bottom: 40px;
-            border: 1px solid #f0e6d2;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid #f2e8d5;
+            transition: all 0.3s ease;
         }
 
         .input-label {
@@ -66,121 +67,129 @@
             display: block;
             margin-bottom: 15px;
             font-weight: bold;
-            color: var(--navy);
         }
 
         .input-group {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
+            align-items: stretch;
         }
 
         input[type="text"] {
-            padding: 12px;
-            border: 1.5px solid var(--gold); /* 濃いゴールドの枠線 */
-            background-color: var(--white); /* 白い背景 */
+            padding: 12px 15px;
+            /* 修正：初期状態は薄い枠線 */
+            border: 1px solid var(--border-light); 
+            background-color: var(--white);
             width: 60%;
             font-family: inherit;
             outline: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            /* 修正：色が変わるエフェクトの準備 */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
         }
 
+        /* 修正：入力中（フォーカス時）のエフェクト */
         input[type="text"]:focus {
-            box-shadow: 0 0 8px rgba(201, 162, 77, 0.2);
+            border-color: var(--gold);
+            background-color: #fffefb; /* わずかに暖色寄りの白へ */
+            box-shadow: 0 0 12px rgba(201, 162, 77, 0.15);
+            transform: scale(1.02); /* わずかに浮き上がる */
         }
 
         .btn-check {
             padding: 10px 24px;
-            background: var(--gold); /* 濃いゴールドのボタン */
+            background: var(--gold);
             color: white;
             border: none;
             cursor: pointer;
             font-family: inherit;
             font-size: 0.85rem;
             font-weight: bold;
-            border-radius: 4px;
-            transition: all 0.3s;
+            border-radius: 6px;
+            transition: all 0.3s ease;
         }
 
         .btn-check:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(201, 162, 77, 0.3);
+            filter: brightness(1.05);
+            box-shadow: 0 4px 15px rgba(201, 162, 77, 0.4);
         }
 
         .pass-hint {
             font-size: 0.75rem;
-            color: #8a7b5d;
-            margin-top: 12px;
-            font-style: italic;
+            color: #9a8a6d;
+            margin-top: 15px;
         }
 
+        /* 修正：エラーメッセージをアクセントカラー（ゴールド）に */
         #error-message {
-            color: var(--error);
-            font-size: 0.75rem;
-            margin-top: 5px;
-            min-height: 1rem;
+            color: var(--gold); 
+            font-size: 0.8rem;
+            margin-top: 8px;
+            min-height: 1.2rem;
             font-weight: bold;
+            letter-spacing: 0.05rem;
         }
 
-        /* コース表示エリア */
+        /* --- コース表示エリア --- */
         .menu-item {
             margin-bottom: 35px;
             padding-bottom: 25px;
             border-bottom: 1px double #eee;
-            animation: fadeIn 0.6s ease forwards;
+            animation: fadeIn 0.8s ease forwards;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .menu-item:last-child { border-bottom: none; }
 
         .course-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: bold;
             display: block;
             margin-bottom: 8px;
         }
 
         .course-desc {
-            font-size: 0.8rem;
-            color: #777;
-            margin-bottom: 15px;
-            line-height: 1.6;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 18px;
+            line-height: 1.7;
         }
 
         .btn-enter {
             display: inline-block;
-            padding: 12px 35px;
+            padding: 14px 40px;
             background: var(--navy);
             color: white;
             border: none;
             text-decoration: none;
             cursor: pointer;
             font-family: inherit;
-            letter-spacing: 0.1rem;
-            font-size: 0.85rem;
+            letter-spacing: 0.15rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
-            border-radius: 2px;
+            border-radius: 4px;
         }
 
         .btn-enter:hover {
             background: var(--gold);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .hidden { display: none; }
 
         footer {
-            margin-top: 40px;
-            font-size: 0.75rem;
+            margin-top: 50px;
+            font-size: 0.8rem;
             color: #bbb;
             border-top: 1px solid #eee;
-            padding-top: 20px;
+            padding-top: 25px;
         }
     </style>
 </head>
@@ -214,7 +223,7 @@
 
     <div class="menu-item hidden" id="premium-course">
         <span class="course-title">【プレミアム】最上位鑑定</span>
-        <p class="course-desc">ウィング（サブタイプ）まで自動判定する、自己理解の決定版です。</p>
+        <p class="course-desc">ウィングまで自動判定する、自己理解の決定版です。</p>
         <a href="https://ennea5w4.github.io/enneagram-premium/" class="btn-enter">鑑定を開始する</a>
     </div>
 
@@ -241,6 +250,7 @@
             std.classList.add('hidden');
             prm.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } else {
+            // エラー時：アクセントカラーで表示
             error.innerText = "合言葉が違います";
             std.classList.add('hidden');
             prm.classList.add('hidden');
