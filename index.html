@@ -10,6 +10,7 @@
             --navy: #1a2a3a;
             --white: #ffffff;
             --gray: #f4f4f2;
+            --error: #e74c3c;
         }
 
         body {
@@ -28,7 +29,7 @@
             width: 100%;
             max-width: 500px;
             background: var(--white);
-            padding: 60px 40px;
+            padding: 50px 40px;
             box-shadow: 0 15px 50px rgba(0,0,0,0.05);
             text-align: center;
             border: 1px solid #e0e0e0;
@@ -45,14 +46,73 @@
             font-size: 0.8rem;
             letter-spacing: 0.1rem;
             color: var(--gold);
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             display: block;
         }
 
+        /* 合言葉入力セクション */
+        .password-section {
+            background: #fafaf9;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 40px;
+            border: 1px solid #eee;
+        }
+
+        .input-label {
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 60%;
+            font-family: inherit;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--gold);
+        }
+
+        .btn-check {
+            padding: 10px 20px;
+            background: var(--gold);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+        }
+
+        #error-message {
+            color: var(--error);
+            font-size: 0.75rem;
+            margin-top: 10px;
+            min-height: 1rem;
+            font-weight: bold;
+        }
+
+        /* コース表示エリア */
         .menu-item {
             margin-bottom: 35px;
             padding-bottom: 25px;
             border-bottom: 1px double #eee;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .menu-item:last-child { border-bottom: none; }
@@ -77,6 +137,7 @@
             background: var(--navy);
             color: white;
             border: none;
+            text-decoration: none;
             cursor: pointer;
             font-family: inherit;
             letter-spacing: 0.1rem;
@@ -89,10 +150,14 @@
             transform: translateY(-2px);
         }
 
+        .hidden { display: none; }
+
         footer {
             margin-top: 40px;
             font-size: 0.75rem;
             color: #bbb;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
         }
     </style>
 </head>
@@ -102,22 +167,31 @@
     <h1>Rainy Muse Art Lab</h1>
     <span class="subtitle">ENNEAGRAM DIAGNOSIS</span>
 
-    <div class="menu-item">
-        <span class="course-title">【ライト】簡易診断</span>
-        <p class="course-desc">20個のキーワードから、直感であなたの本質を導き出します。</p>
-        <button class="btn-enter" onclick="goTo('light')">診断を開始する</button>
+    <div class="password-section">
+        <label class="input-label">合言葉を入力してください</label>
+        <div class="input-group">
+            <input type="text" id="passInput" placeholder="合言葉を入力">
+            <button class="btn-check" onclick="unlock()">入室する</button>
+        </div>
+        <div id="error-message"></div>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item" id="light-course">
+        <span class="course-title">【ライト】簡易キーワード診断</span>
+        <p class="course-desc">20個のキーワードから、直感であなたの本質を導き出します。</p>
+        <a href="https://ennea5w4.github.io/enneagram-test/" class="btn-enter">診断を開始する</a>
+    </div>
+
+    <div class="menu-item hidden" id="standard-course">
         <span class="course-title">【スタンダード】精密分析</span>
         <p class="course-desc">27問の設問とレーダーチャートで、多角的な傾向を分析します。</p>
-        <button class="btn-enter" onclick="gate('standard')">合言葉で診断する</button>
+        <a href="https://ennea5w4.github.io/enneagram-standard/" class="btn-enter">診断を開始する</a>
     </div>
 
-    <div class="menu-item">
+    <div class="menu-item hidden" id="premium-course">
         <span class="course-title">【プレミアム】最上位鑑定</span>
         <p class="course-desc">ウィング（サブタイプ）まで自動判定する、自己理解の決定版です。</p>
-        <button class="btn-enter" onclick="gate('premium')">合言葉で鑑定する</button>
+        <a href="https://ennea5w4.github.io/enneagram-premium/" class="btn-enter">鑑定を開始する</a>
     </div>
 
     <footer>
@@ -126,28 +200,37 @@
 </div>
 
 <script>
-    // 各サイトの実際のURLをここに設定してください
-    const config = {
-        light: "https://ennea5w4.github.io/enneagram-test/",
-        standard: "https://ennea5w4.github.io/enneagram-standard/",
-        premium: "https://ennea5w4.github.io/enneagram-premium/",
-        // 合言葉（自由に変更）
-        pass_standard: "9tsunotobira",
-        pass_premium: "9master-key"
-    };
+    function unlock() {
+        const pass = document.getElementById('passInput').value;
+        const error = document.getElementById('error-message');
+        const std = document.getElementById('standard-course');
+        const prm = document.getElementById('premium-course');
 
-    function goTo(type) {
-        window.location.href = config[type];
-    }
+        // エラーメッセージのリセット
+        error.innerText = "";
 
-    function gate(type) {
-        const input = prompt("公式LINEでお伝えした「合言葉」を入力してください。");
-        if (input === config['pass_' + type]) {
-            window.location.href = config[type];
-        } else if (input !== null) {
-            alert("合言葉が一致しませんでした。");
+        if (pass === "9tsunotobira") {
+            // スタンダード版を表示
+            std.classList.remove('hidden');
+            prm.classList.add('hidden');
+        } else if (pass === "9master-key") {
+            // プレミアム版を表示
+            prm.classList.remove('hidden');
+            std.classList.add('hidden');
+        } else {
+            // 間違っている場合
+            error.innerText = "合言葉が違います";
+            std.classList.add('hidden');
+            prm.classList.add('hidden');
         }
     }
+
+    // Enterキーでも入室できるように設定
+    document.getElementById('passInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            unlock();
+        }
+    });
 </script>
 
 </body>
